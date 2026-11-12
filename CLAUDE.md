@@ -40,7 +40,7 @@ src/
   data/        IndexedDB via Dexie: queue, review log, seen films, profile.
   learning/    Pure logic, no UI: queue growth, card selection, levels, FSRS wrapper, answer checking.
   ui/          React screens and components.
-  app/         Routing, PWA setup, app shell.
+  app/         Routing, PWA setup, app shell, and services that wire tmdb/ + data/ + learning/.
 tests/
   fixtures/    Recorded TMDB responses used by all tests.
   e2e/         Playwright tests.

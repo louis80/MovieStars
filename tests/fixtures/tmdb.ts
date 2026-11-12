@@ -104,7 +104,15 @@ const castMember = (p: TmdbPersonDetails, character: string, order: number) => (
   known_for_department: p.known_for_department,
 });
 
-const extra = (id: number, name: string, order: number) => ({
+/** Supporting cast without their own fixture: their person details are synthesised. */
+const extraNames = new Map<number, string>();
+
+const extra = (id: number, name: string, order: number) => {
+  extraNames.set(id, name);
+  return extraCast(id, name, order);
+};
+
+const extraCast = (id: number, name: string, order: number) => ({
   id,
   name,
   profile_path: `/profile-${id}.jpg`,
@@ -152,7 +160,37 @@ export const filmDetails: Record<number, TmdbMovieDetails> = {
       crew: [director(people.christopherNolan)],
     },
   },
+  [films.darkKnightRises.id]: {
+    ...films.darkKnightRises,
+    origin_country: ["US", "GB"],
+    credits: {
+      cast: [
+        extra(3894, "Christian Bale", 0),
+        extra(3895, "Michael Caine", 1),
+        extra(64, "Gary Oldman", 2),
+        extra(1813, "Anne Hathaway", 3),
+        extra(2524, "Tom Hardy", 4),
+        castMember(people.marionCotillard, "Miranda Tate", 5),
+      ],
+      crew: [director(people.christopherNolan)],
+    },
+  },
 };
+
+function extraPerson(id: number): TmdbPersonDetails | undefined {
+  const name = extraNames.get(id);
+  if (!name) return undefined;
+  return {
+    id,
+    name,
+    profile_path: `/profile-${id}.jpg`,
+    known_for_department: "Acting",
+    place_of_birth: null,
+    birthday: null,
+    popularity: 10,
+    movie_credits: { cast: [], crew: [] },
+  };
+}
 
 const page = <T>(results: T[]): TmdbPage<T> => ({
   page: 1,
@@ -195,7 +233,8 @@ export function fixtureFetch(log: string[] = []): typeof fetch {
     if (path === "/trending/movie/week") return json(trending);
     if (path === "/discover/movie") return json(discoverFr);
     if (personMatch) {
-      const found = Object.values(people).find((p) => p.id === Number(personMatch[1]));
+      const id = Number(personMatch[1]);
+      const found = Object.values(people).find((p) => p.id === id) ?? extraPerson(id);
       return found ? json(found) : new Response("{}", { status: 404 });
     }
     if (movieMatch) {

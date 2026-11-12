@@ -40,7 +40,7 @@ export type Level = 1 | 2 | 3 | 4;
 
 export type Grade = "again" | "good";
 
-export type QueueSource = "starter" | "film" | "added";
+export type QueueSource = "starter" | "film" | "growth" | "added";
 
 export type RecallMode = "flip" | "tiles" | "typing";
 
