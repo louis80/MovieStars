@@ -7,6 +7,11 @@ import { useEnterKey } from "./useEnterKey";
 
 const LEVEL_NAMES = { 1: "Recognise", 2: "Distinguish", 3: "Recall", 4: "Connect" } as const;
 
+export function streakLabel(streak: number): string {
+  if (streak === 0) return "Start a streak today";
+  return streak === 1 ? "1-day streak" : `${streak}-day streak`;
+}
+
 export function HomeScreen() {
   const { learning, sample } = useServices();
   const [summary] = useAsync(() => learning.homeSummary(), [learning]);
@@ -39,11 +44,7 @@ export function HomeScreen() {
                 className="quiet"
               >
                 <Icon name="flame" size={16} color="var(--warm)" strokeWidth={2} />
-                <span>
-                  {summary.value.streak === 1
-                    ? "1-day streak"
-                    : `${summary.value.streak}-day streak`}
-                </span>
+                <span>{streakLabel(summary.value.streak)}</span>
               </div>
             </div>
 

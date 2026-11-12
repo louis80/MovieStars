@@ -88,7 +88,7 @@ describe("home", () => {
     window.location.hash = "#/";
 
     await screen.findByRole("heading", { name: "Ready for today's faces?" });
-    expect(screen.getByText("0-day streak")).toBeInTheDocument();
+    expect(screen.getByText("Start a streak today")).toBeInTheDocument();
     expect(screen.getByText("0 of 10 cards")).toBeInTheDocument();
     const recognise = screen.getByText("Recognise").parentElement;
     await waitFor(() => expect(recognise).toHaveTextContent("Recognise6"));
