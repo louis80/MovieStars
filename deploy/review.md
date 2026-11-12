@@ -3,7 +3,7 @@
 - **Reads:** [test/report.md](../test/report.md) (accepted 2026-11-12), [spec/spec.md](../spec/spec.md)
 - **Pull request:** [#1 MovieStars v1](https://github.com/louis80/MovieStars/pull/1), `build/v1` → `main`
 - **Reviewed:** commit `084d9cd`; fixes in `ee98ddb`
-- **Status:** Review done; release waits on the open decisions below
+- **Status:** Review done; hosting decided; release waits on the repo settings, token and checks below
 
 ## Verdict
 
@@ -37,8 +37,9 @@ Each fix has a test; 140 unit tests and 12 browser tests pass.
 
 | Decision or check | Who | Notes |
 | --- | --- | --- |
-| Hosting, and how the TMDB token is protected | louis80 | See the options below |
-| TMDB API Read Access Token | louis80 | From your TMDB account settings; never committed |
+| Hosting | louis80 | **Decided 2026-11-12: option A, GitHub Pages, repo made public.** The token will be readable in the published app; accepted for a personal app. Option B stays available later without code changes |
+| Make the repo public; turn on Pages (source: GitHub Actions) | louis80 | Repository settings |
+| TMDB API Read Access Token, saved as the repo secret `TMDB_TOKEN` | louis80 | Never pasted in chat or committed; the deploy fails with a clear message if it is missing |
 | Compare the TMDB logo with the official file | louis80 + Claude | Ours is from Simple Icons; TMDB's logo page was unreachable from the build workspace |
 | First run on real TMDB data | Claude | Photos, posters, country detection and look-alike choices on real people |
 | Install on a real phone | louis80 | Add to home screen, open full-screen, try once offline |
