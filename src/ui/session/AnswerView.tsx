@@ -52,7 +52,7 @@ export function AnswerView({
       <div className="bottom">
         {isNewFace && (
           <div className="new-face">
-            <span className="quiet">New face</span>
+            <span className="quiet">First time</span>
             <span style={{ display: "flex", gap: 16 }}>
               <button
                 type="button"
@@ -61,10 +61,11 @@ export function AnswerView({
                 onClick={onInterested}
                 disabled={interested}
               >
-                {interested ? "Marked interested" : "Interested"}
+                More like this
+                {interested && <Icon name="check" size={14} strokeWidth={2.4} />}
               </button>
               <button type="button" className="btn-text underline" onClick={onNotForMe}>
-                Not for me
+                Don't show again
               </button>
             </span>
           </div>

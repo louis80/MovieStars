@@ -161,7 +161,7 @@ export class LearningService {
     return person ? this.add([person.id], "added") : 0;
   }
 
-  /** "Not for me": remove the person and never re-add them automatically (spec AC8). */
+  /** "Don't show again": remove the person and never re-add them automatically (spec AC8). */
   async notForMe(personId: number): Promise<void> {
     const person = await this.person(personId);
     await this.db.transaction("rw", this.db.queue, this.db.excluded, async () => {

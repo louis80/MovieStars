@@ -70,7 +70,7 @@ export interface QueueEntry {
   lastCorrectDay: string | null;
   memory: MemoryState;
   source: QueueSource;
-  /** true = "Interested", false never stored (removed instead), null = not asked yet. */
+  /** true = "More like this", false never stored (removed instead), null = not asked yet. */
   interested: boolean | null;
   addedAt: number;
 }
@@ -88,7 +88,7 @@ export interface SeenFilm {
   addedAt: number;
 }
 
-/** Someone marked "Not for me": never re-added automatically. */
+/** Someone marked "Don't show again": never re-added automatically. */
 export interface ExcludedPerson {
   personId: number;
   country: string | null;

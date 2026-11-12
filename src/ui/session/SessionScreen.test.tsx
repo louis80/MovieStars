@@ -141,12 +141,12 @@ describe("recall modes (AC6)", () => {
   });
 });
 
-// AC8 (screen part): "Not for me" removes the person straight from a card.
+// AC8 (screen part): "Don't show again" removes the person straight from a card.
 describe("not for me", () => {
   it("removes a new face and moves on", async () => {
     const { db, user } = await setup({ level: 1 });
     const before = await db.queue.count();
-    await user.click(screen.getByRole("button", { name: "Not for me" }));
+    await user.click(screen.getByRole("button", { name: "Don't show again" }));
     await waitFor(async () => expect(await db.queue.count()).toBe(before - 1));
     expect(await db.excluded.count()).toBe(1);
     expect(await db.reviewLog.count()).toBe(0);
@@ -156,8 +156,13 @@ describe("not for me", () => {
   it("can mark a new face as interested after answering", async () => {
     const { db, user } = await setup({ level: 1 });
     await user.click(document.querySelector(".choice") as HTMLButtonElement);
-    await user.click(await screen.findByRole("button", { name: "Interested" }));
-    await screen.findByRole("button", { name: "Marked interested" });
+    await user.click(await screen.findByRole("button", { name: "More like this" }));
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "More like this" })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      ),
+    );
     const interested = (await db.queue.toArray()).filter((e) => e.interested === true);
     expect(interested).toHaveLength(1);
     db.close();

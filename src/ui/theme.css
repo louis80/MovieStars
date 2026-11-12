@@ -140,6 +140,10 @@ a {
 
 .btn-text {
   min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   background: none;
   border: none;
   font-size: 14px;
@@ -579,6 +583,8 @@ a {
 
 .new-face {
   display: flex;
+  flex-wrap: wrap;
+  column-gap: 12px;
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
@@ -668,4 +674,9 @@ a {
   flex-direction: column;
   gap: 8px;
   font-size: 15px;
+}
+
+.btn-text[aria-pressed="true"] {
+  color: var(--ink);
+  opacity: 1;
 }

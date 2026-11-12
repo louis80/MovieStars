@@ -59,7 +59,7 @@ describe("interleave", () => {
 });
 
 describe("entriesToAdd", () => {
-  it("skips people already queued or marked Not for me", () => {
+  it("skips people already queued or marked Don't show again", () => {
     const added = entriesToAdd([1, 2, 2, 3, 4], "film", new Set([1]), new Set([3]), now);
     expect(added.map((e) => e.personId)).toEqual([2, 4]);
     expect(added[0]).toMatchObject({ level: 1, source: "film", interested: null });
@@ -75,7 +75,7 @@ describe("needsGrowth", () => {
 });
 
 describe("rankCandidates", () => {
-  it("puts people from seen films first, then those like the Interested ones", () => {
+  it("puts people from seen films first, then those like the More like this ones", () => {
     const fromFilm = person(1, "US", 1990);
     const likeInterested = person(2, "FR", 2010);
     const other = person(3, "JP", 1980, 50);
@@ -87,7 +87,7 @@ describe("rankCandidates", () => {
     expect(ranked.map((p) => p.id)).toEqual([1, 2, 3]);
   });
 
-  it("puts people like those marked Not for me last", () => {
+  it("puts people like those marked Don't show again last", () => {
     const similar = person(1, "US", 2000, 100);
     const different = person(2, "IT", 1970, 1);
     const ranked = rankCandidates([similar, different], {

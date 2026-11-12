@@ -58,7 +58,7 @@ describe("addSeenFilms (AC2)", () => {
   });
 });
 
-// AC8: "Not for me" removes the person, and they are not re-added automatically.
+// AC8: "Don't show again" removes the person, and they are not re-added automatically.
 describe("notForMe (AC8)", () => {
   it("removes the person and keeps them out afterwards", async () => {
     const { db, service } = setup();

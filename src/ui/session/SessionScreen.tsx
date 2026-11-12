@@ -214,9 +214,9 @@ function SessionRun({
             )}
             {isNewFace && (
               <div className="new-face">
-                <span className="quiet">New face</span>
+                <span className="quiet">First time</span>
                 <button type="button" className="btn-text underline" onClick={onNotForMe}>
-                  Not for me
+                  Don't show again
                 </button>
               </div>
             )}

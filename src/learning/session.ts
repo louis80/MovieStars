@@ -53,7 +53,7 @@ export function answer(session: Session, grade: Grade): Session {
   };
 }
 
-/** Move on without an answer (the person was marked "Not for me"). */
+/** Move on without an answer (the person was marked "Don't show again"). */
 export function skip(session: Session): Session {
   if (isComplete(session)) return session;
   return { ...session, position: session.position + 1 };

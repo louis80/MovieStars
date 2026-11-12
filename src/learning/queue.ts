@@ -51,7 +51,7 @@ export function newQueueEntry(personId: number, source: QueueSource, now: Date):
 
 /**
  * New queue entries for the given people, skipping anyone already queued or marked
- * "Not for me" (spec AC2, AC8).
+ * "Don't show again" (spec AC2, AC8).
  */
 export function entriesToAdd(
   personIds: number[],
@@ -90,8 +90,8 @@ const sameGroup = (a: { country: string | null; decade: number | null }, b: Pers
 
 /**
  * Order growth candidates by the user's taste (spec: Growth and Taste signal):
- * people from seen films first, then those like the people marked "Interested";
- * people like those marked "Not for me" go last.
+ * people from seen films first, then those like the people marked "More like this";
+ * people like those marked "Don't show again" go last.
  */
 export function rankCandidates(candidates: Person[], taste: Taste): Person[] {
   const score = (p: Person) => {
