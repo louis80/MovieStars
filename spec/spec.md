@@ -41,22 +41,41 @@ Each person in the queue has a level from 1 to 4. A card tests one person at the
 | --- | --- | --- | --- |
 | 1 | Recognise | Photo + 4 name choices, different-looking people | Photo → "Marion Cotillard" among 4 |
 | 2 | Distinguish | Photo + 4 name choices from the same country and era | Photo → pick among 4 French actresses of the 2000s |
-| 3 | Recall | Photo + text box; spelling-tolerant check | Type "Cotillard" |
+| 3 | Recall | Photo only; recall the name, then answer in the chosen mode (below) | Think "Marion Cotillard", flip, tap "Knew it" |
 | 4 | Connect | A film or a person, linking question | "Who directed *Anatomie d'une chute*?" or "Which of these films was she in?" |
 
 Directors use the same levels; their level-4 cards link them to the films they directed.
 
+**Level-3 answer modes** (chosen in settings; the recall step is the same in all three):
+
+- **Flip and self-rate** (default): tap to reveal the name, then tap "Knew it" or "Didn't".
+- **Letter tiles:** tap the letters of the family name from a scrambled set with 3 extra letters.
+- **Typing:** type the family name, with its first letter given; spelling-tolerant check.
+
 **Hints.** When a person was added from a film you've seen, cards at levels 1–3 can show that film as a hint ("You saw them in *Oppenheimer*"), tap to reveal.
 
-**Feedback after every answer.** The correct name, photo and one known-for film are always shown, right or wrong, so every card teaches.
+**Feedback after every answer.** The correct name and photo are always shown, right or wrong, with one **memory anchor**: a film you've seen with them if there is one, otherwise their best-known role or film ("Édith Piaf in *La Vie en rose*"). Every card teaches.
 
-## Progression rules
+## Progression and scheduling
+
+Two separate mechanisms: **levels** decide what kind of card you get; **FSRS** decides when a person comes back.
+
+**Levels (visible progress)**
 
 - **Level up:** 2 correct answers in a row at the current level, on different days.
 - **Level down:** a wrong answer drops the person one level (never below 1).
-- **Spacing:** a person answered correctly comes back after 1, 3, 7, then 14 days; a wrong answer brings them back in the same session and the next day.
-- **Mastered:** after a correct level-4 answer, the person is "mastered" and only comes back for review every 30 days.
-- **Session mix:** today's session takes due reviews first, then new people, up to the daily goal (default 10 cards, adjustable to 5, 10 or 20).
+- **Mastered:** a person at level 4 whose FSRS stability exceeds 30 days.
+
+**Scheduling with FSRS**
+
+The app uses FSRS (Free Spaced Repetition Scheduler), an open-source spaced-repetition algorithm. For each person it keeps an estimate of how well you remember them and schedules the next card for when you are likely to start forgetting.
+
+- Each answer is graded **Again** (wrong or "Didn't") or **Good** (right or "Knew it").
+- Target retention: 90%. Easy names come back less and less often; hard ones come back sooner.
+- A person graded Again also comes back once more in the same session.
+- Default FSRS parameters at first; personalising them from your own answer history is out of scope for v1.
+
+**Session mix:** due reviews first (most overdue first), then new people, up to the daily goal (default 10 cards, adjustable to 5, 10 or 20).
 
 ## Engagement (healthy habit, no dark patterns)
 
@@ -77,9 +96,10 @@ Stored on the device only:
 
 | Item | Fields |
 | --- | --- |
-| Queue entry | TMDB person ID, level (1–4), next review date, correct-in-a-row count, source (starter / film / added), interested flag |
+| Queue entry | TMDB person ID, level (1–4), correct-in-a-row count, FSRS state (stability, difficulty, due date, last review), source (starter / film / added), interested flag |
+| Review log | Person ID, date, card level, grade (Again / Good) |
 | Seen films | TMDB film ID, date added |
-| Profile | Streak count, last session date, daily goal |
+| Profile | Streak count, last session date, daily goal, level-3 answer mode |
 
 Country and era for a person are derived from place of birth and the years of their main films.
 
@@ -87,14 +107,15 @@ Country and era for a person are derived from place of birth and the years of th
 
 1. On first launch, a user can start a session within 2 taps (Welcome → Start).
 2. Tapping 3 films on Recent films adds each film's director and top 5 cast to the queue, without duplicates.
-3. Every card shows the correct answer, a photo and a known-for film after the user answers.
+3. Every card shows the correct name, a photo and a memory anchor after the user answers; the anchor is a film the user has seen with that person whenever one exists.
 4. A person answered correctly twice in a row on different days moves up exactly one level; a wrong answer moves them down one level, never below 1.
 5. Level-2 choices come from the same country and decade as the person whenever at least 3 such people are available.
-6. Level-3 accepts the family name alone and tolerates one typo or a missing accent ("Cotilard", "Celine").
-7. "Not for me" removes the person from the queue, and they are not re-added automatically.
-8. Progress survives closing and reopening the app, and works offline for people already cached.
-9. The app can be installed to a phone's home screen and opens full-screen.
-10. The About page shows the TMDB logo and the notice "This product uses the TMDB API but is not endorsed or certified by TMDB."
+6. Level 3 works in all three answer modes. Flip and self-rate needs at most 2 taps; typing accepts the family name alone and tolerates one typo or a missing accent ("Cotilard", "Celine").
+7. Next review dates come from FSRS: after a Good grade the next interval is longer than the previous one, and after Again the person reappears in the same session.
+8. "Not for me" removes the person from the queue, and they are not re-added automatically.
+9. Progress survives closing and reopening the app, and works offline for people already cached.
+10. The app can be installed to a phone's home screen and opens full-screen.
+11. The About page shows the TMDB logo and the notice "This product uses the TMDB API but is not endorsed or certified by TMDB."
 
 ## Out of scope for v1
 
@@ -104,3 +125,4 @@ Country and era for a person are derived from place of birth and the years of th
 - Push notifications
 - TV series
 - Social features (sharing, leaderboards)
+- Personalised FSRS parameters
