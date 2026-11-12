@@ -38,7 +38,7 @@ Each task lists the spec acceptance criteria (AC) it proves.
 | T11 | PWA: manifest, icons, service worker, offline use of cached people | `vite.config.ts`, `public/` | AC9 (offline), AC10 |
 | T12 | End-to-end acceptance suite covering AC1–AC11 on a phone-sized browser | `tests/e2e/` | All 11 criteria in one run |
 
-Order: T0 → T1 → T2 → T3–T7 (logic) → T8–T10 (screens) → T11 → T12. I'll show you the app running after T8, so you can react to the look early.
+Order: T0 → T1 → T2 → T3–T7 (logic) → T8–T10 (screens) → T11 → T12. Screens T8–T10 follow the spec's "Look and feel" section and the approved mockups. I'll show you the app running after T8, so you can compare it with them.
 
 ## How you'll see progress
 

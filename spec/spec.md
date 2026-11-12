@@ -84,6 +84,18 @@ The app uses FSRS (Free Spaced Repetition Scheduler), an open-source spaced-repe
 - **Short by design:** a session ends at the daily goal; "One more round" is offered once, never automatically.
 - **No:** endless feeds, push notifications in v1, timers, penalties, or fake urgency.
 
+## Look and feel
+
+Approved by louis80 on 2026-11-12 from the [MovieStars UI mockups](https://claude.ai/artifact/QFrFrYACMNikh86TK6SLgc) (Home, Quiz card, Answer, Recall card, Films I've seen).
+
+- **Style:** clean and minimal, inspired by the one-question-at-a-time feel of form tools like Tally. One question and one main action per screen.
+- **The face is the quiz:** on quiz cards the photo fills most of the screen (about 380 px tall on a 390 × 844 phone).
+- **Colours:** white background, near-black text and primary buttons (#111111), grey secondary text (#6B6B6B), light grey lines (#E6E6E6). Blue (#2F5BEA) marks a correct answer; orange (#C2410C) is used for the streak and wrong answers. No red/green pairs.
+- **Type:** Inter; bold headings with tight letter spacing (24–34 px on cards), 15–17 px body.
+- **Shape:** 12–16 px rounded corners; primary buttons 56 px tall, full width, at the bottom of the screen; every tap target at least 44 px.
+- **Keyboard on desktop:** choices show letter keys (A–D); Enter continues, Space reveals the name, 1 and 2 answer "Didn't" and "Knew it".
+- **Motion:** short, quiet transitions between cards; no confetti or flashing.
+
 ## Data
 
 From TMDB (fetched as needed, cached on the device):
@@ -126,3 +138,4 @@ Country and era for a person are derived from place of birth and the years of th
 - TV series
 - Social features (sharing, leaderboards)
 - Personalised FSRS parameters
+- Dark theme (a black version following the phone's setting was discussed; can be added in a later loop)
