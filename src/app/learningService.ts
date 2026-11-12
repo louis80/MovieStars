@@ -228,9 +228,12 @@ export class LearningService {
   async updateSettings(
     change: Partial<Pick<Profile, "dailyGoal" | "recallMode">>,
   ): Promise<Profile> {
-    const profile = { ...(await loadProfile(this.db)), ...change };
-    await saveProfile(this.db, profile);
-    return profile;
+    // One transaction per change, so quick successive changes cannot overwrite each other.
+    return this.db.transaction("rw", this.db.profile, async () => {
+      const profile = { ...(await loadProfile(this.db)), ...change };
+      await saveProfile(this.db, profile);
+      return profile;
+    });
   }
 
   /** "Don't show again": remove the person and never re-add them automatically (spec AC8). */

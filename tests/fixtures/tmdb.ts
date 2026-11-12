@@ -179,6 +179,21 @@ export const filmDetails: Record<number, TmdbMovieDetails> = {
       crew: [director(people.christopherNolan)],
     },
   },
+  [films.oppenheimer.id]: {
+    ...films.oppenheimer,
+    origin_country: ["US", "GB"],
+    credits: {
+      cast: [
+        extra(2037, "Cillian Murphy", 0),
+        extra(5081, "Emily Blunt", 1, 1),
+        extra(1892, "Matt Damon", 2),
+        extra(3223, "Robert Downey Jr.", 3),
+        extra(1373737, "Florence Pugh", 4, 1),
+        extra(1245, "Josh Hartnett", 5),
+      ],
+      crew: [director(people.christopherNolan)],
+    },
+  },
 };
 
 function extraPerson(id: number): TmdbPersonDetails | undefined {
@@ -223,6 +238,13 @@ export const nowPlaying = page([films.anatomyOfAFall, films.oppenheimer]);
 export const trending = page([films.inception, films.anatomyOfAFall]);
 export const discoverFr = page([films.anatomyOfAFall, films.blueIsTheWarmestColor]);
 
+/** Lower case without accents, as TMDB's search matches "huller" to "Hüller". */
+const plain = (text: string) =>
+  text
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase();
+
 /** A fetch replacement that answers TMDB paths from these fixtures. */
 export function fixtureFetch(log: string[] = []): typeof fetch {
   return async (input) => {
@@ -248,18 +270,18 @@ export function fixtureFetch(log: string[] = []): typeof fetch {
       return found ? json(found) : new Response("{}", { status: 404 });
     }
     if (path === "/search/person") {
-      const q = (url.searchParams.get("query") ?? "").toLowerCase();
+      const q = plain(url.searchParams.get("query") ?? "");
       return json(
         page(
           Object.values(people)
-            .filter((p) => p.name.toLowerCase().includes(q))
+            .filter((p) => plain(p.name).includes(q))
             .map(summary),
         ),
       );
     }
     if (path === "/search/movie") {
-      const q = (url.searchParams.get("query") ?? "").toLowerCase();
-      return json(page(Object.values(films).filter((f) => f.title.toLowerCase().includes(q))));
+      const q = plain(url.searchParams.get("query") ?? "");
+      return json(page(Object.values(films).filter((f) => plain(f.title).includes(q))));
     }
     return new Response("{}", { status: 404 });
   };

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useServices } from "../app/ServicesContext";
 import type { Profile, RecallMode } from "../learning/types";
 import { BackLink } from "./BackLink";
@@ -15,11 +16,17 @@ const MODES: { value: RecallMode; label: string; note: string }[] = [
 /** About, settings, and the TMDB credit required for free use of its API (spec AC11). */
 export function AboutScreen() {
   const { learning } = useServices();
-  const [profile, reload] = useAsync(() => learning.profile(), [learning]);
+  const [loaded] = useAsync(() => learning.profile(), [learning]);
+  // Choices show at once; saving happens in the background.
+  const [changes, setChanges] = useState<Partial<Pick<Profile, "dailyGoal" | "recallMode">>>({});
+  const profile =
+    loaded.status === "ready"
+      ? ({ status: "ready", value: { ...loaded.value, ...changes } } as const)
+      : loaded;
 
-  const save = async (change: Partial<Pick<Profile, "dailyGoal" | "recallMode">>) => {
-    await learning.updateSettings(change);
-    reload();
+  const save = (change: Partial<Pick<Profile, "dailyGoal" | "recallMode">>) => {
+    setChanges((current) => ({ ...current, ...change }));
+    void learning.updateSettings(change);
   };
 
   return (

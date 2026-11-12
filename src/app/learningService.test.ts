@@ -161,3 +161,15 @@ describe("homeSummary faces", () => {
     db.close();
   });
 });
+
+describe("updateSettings", () => {
+  it("keeps both of two quick changes", async () => {
+    const { db, service } = setup();
+    await Promise.all([
+      service.updateSettings({ dailyGoal: 20 }),
+      service.updateSettings({ recallMode: "typing" }),
+    ]);
+    expect(await service.profile()).toMatchObject({ dailyGoal: 20, recallMode: "typing" });
+    db.close();
+  });
+});
