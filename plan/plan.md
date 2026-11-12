@@ -1,7 +1,7 @@
 # Plan: MovieStars v1
 
 - **Reads:** [spec/spec.md](../spec/spec.md) (approved 2026-11-12), [CLAUDE.md](../CLAUDE.md)
-- **Status:** Draft, awaiting approval
+- **Status:** Approved by louis80 on 2026-11-12
 
 ## Approach
 
