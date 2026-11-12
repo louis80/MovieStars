@@ -2,6 +2,8 @@
 
 export type Role = "actor" | "director";
 
+export type Gender = "female" | "male" | "other";
+
 export interface FilmRef {
   id: number;
   title: string;
@@ -15,6 +17,7 @@ export interface Person {
   id: number;
   name: string;
   role: Role;
+  gender: Gender | null;
   photoPath: string | null;
   /** ISO 3166-1 alpha-2 code when known (e.g. "FR", "US"), otherwise null. */
   country: string | null;

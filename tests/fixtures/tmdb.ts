@@ -41,6 +41,7 @@ export const films = {
 const person = (
   id: number,
   name: string,
+  gender: 1 | 2,
   known_for_department: string,
   place_of_birth: string | null,
   cast: { film: TmdbMovieSummary; character: string }[],
@@ -48,6 +49,7 @@ const person = (
 ): TmdbPersonDetails => ({
   id,
   name,
+  gender,
   profile_path: `/profile-${id}.jpg`,
   known_for_department,
   place_of_birth,
@@ -60,26 +62,27 @@ const person = (
 });
 
 export const people = {
-  marionCotillard: person(8293, "Marion Cotillard", "Acting", "Paris, France", [
+  marionCotillard: person(8293, "Marion Cotillard", 1, "Acting", "Paris, France", [
     { film: films.laVieEnRose, character: "Édith Piaf" },
     { film: films.inception, character: "Mal" },
     { film: films.darkKnightRises, character: "Miranda Tate" },
   ]),
-  leaSeydoux: person(121529, "Léa Seydoux", "Acting", "Paris, France", [
+  leaSeydoux: person(121529, "Léa Seydoux", 1, "Acting", "Paris, France", [
     { film: films.blueIsTheWarmestColor, character: "Emma" },
     { film: films.spectre, character: "Madeleine Swann" },
   ]),
-  merylStreep: person(5064, "Meryl Streep", "Acting", "Summit, New Jersey, USA", [
+  merylStreep: person(5064, "Meryl Streep", 1, "Acting", "Summit, New Jersey, USA", [
     { film: films.theDevilWearsPrada, character: "Miranda Priestly" },
     { film: films.mammaMia, character: "Donna" },
   ]),
-  sandraHuller: person(16736, "Sandra Hüller", "Acting", "Suhl, Thuringia, East Germany", [
+  sandraHuller: person(16736, "Sandra Hüller", 1, "Acting", "Suhl, Thuringia, East Germany", [
     { film: films.anatomyOfAFall, character: "Sandra Voyter" },
     { film: films.toniErdmann, character: "Ines Conradi" },
   ]),
   justineTriet: person(
     1257441,
     "Justine Triet",
+    1,
     "Directing",
     "Fécamp, Seine-Maritime, France",
     [],
@@ -88,6 +91,7 @@ export const people = {
   christopherNolan: person(
     525,
     "Christopher Nolan",
+    2,
     "Directing",
     "Westminster, London, England, UK",
     [],
@@ -183,6 +187,7 @@ function extraPerson(id: number): TmdbPersonDetails | undefined {
   return {
     id,
     name,
+    gender: 0,
     profile_path: `/profile-${id}.jpg`,
     known_for_department: "Acting",
     place_of_birth: null,

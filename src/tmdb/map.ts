@@ -1,7 +1,8 @@
-import type { Film, FilmRef, Person, Role } from "../learning/types";
+import type { Film, FilmRef, Gender, Person, Role } from "../learning/types";
 import type {
   TmdbCastCredit,
   TmdbCrewCredit,
+  TmdbGender,
   TmdbMovieDetails,
   TmdbMovieSummary,
   TmdbPersonDetails,
@@ -97,6 +98,13 @@ function mostNotable<T extends TmdbMovieSummary>(credits: T[]): T[] {
     .sort((a, b) => b.vote_count - a.vote_count);
 }
 
+export function genderFromCode(code: TmdbGender | undefined): Gender | null {
+  if (code === 1) return "female";
+  if (code === 2) return "male";
+  if (code === 3) return "other";
+  return null;
+}
+
 export function roleFromDepartment(department: string): Role {
   return department === "Directing" ? "director" : "actor";
 }
@@ -116,6 +124,7 @@ export function toPerson(details: TmdbPersonDetails): Person {
     id: details.id,
     name: details.name,
     role,
+    gender: genderFromCode(details.gender),
     photoPath: details.profile_path,
     country: countryFromPlaceOfBirth(details.place_of_birth),
     decade: decadeOf(knownFor),

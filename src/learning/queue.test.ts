@@ -19,6 +19,7 @@ const person = (
   id,
   name: `Person ${id}`,
   role: "actor",
+  gender: "female",
   photoPath: null,
   country,
   decade,

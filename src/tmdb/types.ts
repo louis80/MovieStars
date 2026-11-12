@@ -7,9 +7,13 @@ export interface TmdbPage<T> {
   total_results: number;
 }
 
+/** TMDB gender codes: 0 not set, 1 female, 2 male, 3 non-binary. */
+export type TmdbGender = 0 | 1 | 2 | 3;
+
 export interface TmdbPersonSummary {
   id: number;
   name: string;
+  gender?: TmdbGender;
   profile_path: string | null;
   known_for_department: string;
   popularity: number;
@@ -38,6 +42,7 @@ export interface TmdbCrewCredit extends TmdbMovieSummary {
 export interface TmdbPersonDetails {
   id: number;
   name: string;
+  gender: TmdbGender;
   profile_path: string | null;
   known_for_department: string;
   place_of_birth: string | null;
