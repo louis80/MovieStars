@@ -344,3 +344,56 @@ a {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+.face-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.faces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.face {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--placeholder);
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.face-mastered {
+  box-shadow:
+    0 0 0 2px var(--paper),
+    0 0 0 4px var(--ink);
+}
+
+.face-more {
+  background: var(--surface);
+  color: var(--ink-quiet);
+  font-size: 12px;
+}
+
+.face-caption {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  color: var(--ink-quiet);
+}

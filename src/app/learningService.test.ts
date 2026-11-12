@@ -142,3 +142,22 @@ describe("recordAnswer and finishSession", () => {
     db.close();
   });
 });
+
+describe("homeSummary faces", () => {
+  it("lists at most 12 faces, best known first, and counts who you know well", async () => {
+    const { db, service } = setup();
+    await service.addSeenFilms([
+      films.anatomyOfAFall.id,
+      films.inception.id,
+      films.darkKnightRises.id,
+    ]);
+    await db.queue.update(people.justineTriet.id, { level: 3 });
+
+    const summary = await service.homeSummary();
+    expect(summary.total).toBeGreaterThan(12);
+    expect(summary.faces).toHaveLength(12);
+    expect(summary.faces[0]).toMatchObject({ name: "Justine Triet", level: 3 });
+    expect(summary.knownWell).toBe(1);
+    db.close();
+  });
+});

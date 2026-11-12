@@ -90,8 +90,9 @@ describe("home", () => {
     await screen.findByRole("heading", { name: "Ready for today's faces?" });
     expect(screen.getByText("Start a streak today")).toBeInTheDocument();
     expect(screen.getByText("0 of 10 cards")).toBeInTheDocument();
-    const recognise = screen.getByText("Recognise").parentElement;
-    await waitFor(() => expect(recognise).toHaveTextContent("Recognise6"));
+    const row = screen.getByRole("link", { name: /6 people · 0 you know well/ });
+    expect(row).toHaveAttribute("href", "#/people");
+    await waitFor(() => expect(row.querySelectorAll(".face")).toHaveLength(6));
     expect(screen.getByRole("link", { name: /Start/ })).toHaveAttribute("href", "#/session");
     db.close();
   });

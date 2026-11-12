@@ -13,7 +13,23 @@ export interface HomeSummary {
   mastered: number;
   /** Cards today's session would hold right now. */
   planned: number;
+  /** Everyone in the queue. */
+  total: number;
+  /** People at level 3 or above ("you know well"). */
+  knownWell: number;
+  /** Faces for the Home row: best known first, at most FACE_ROW_SIZE. */
+  faces: FaceSummary[];
 }
+
+export interface FaceSummary {
+  id: number;
+  name: string;
+  photoPath: string | null;
+  level: 1 | 2 | 3 | 4;
+  mastered: boolean;
+}
+
+export const FACE_ROW_SIZE = 12;
 import {
   GROWTH_BATCH,
   STARTER_SIZE,
@@ -229,7 +245,33 @@ export class LearningService {
       levels: counts,
       mastered: mastered.length,
       planned: planSession(queue, profile.dailyGoal, now).length,
+      total: queue.length,
+      knownWell: queue.filter((e) => e.level >= 3).length,
+      faces: await this.faces(queue),
     };
+  }
+
+  private async faces(queue: QueueEntry[]): Promise<FaceSummary[]> {
+    const ranked = [...queue].sort(
+      (a, b) =>
+        Number(isMastered(b)) - Number(isMastered(a)) ||
+        b.level - a.level ||
+        b.memory.stability - a.memory.stability ||
+        a.addedAt - b.addedAt,
+    );
+    const faces: FaceSummary[] = [];
+    for (const entry of ranked.slice(0, FACE_ROW_SIZE)) {
+      const person = await this.db.people.get(entry.personId);
+      if (!person) continue;
+      faces.push({
+        id: person.id,
+        name: person.name,
+        photoPath: person.photoPath,
+        level: entry.level,
+        mastered: isMastered(entry),
+      });
+    }
+    return faces;
   }
 
   /** Posters for "Films I've seen": now playing and trending this week, without repeats. */

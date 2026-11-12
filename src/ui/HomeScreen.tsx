@@ -1,11 +1,10 @@
 import { Link, useNavigate } from "react-router";
 import { useServices } from "../app/ServicesContext";
 import { BottomNav } from "./BottomNav";
+import { FaceRow } from "./FaceRow";
 import { Icon } from "./Icon";
 import { useAsync } from "./useAsync";
 import { useEnterKey } from "./useEnterKey";
-
-const LEVEL_NAMES = { 1: "Recognise", 2: "Distinguish", 3: "Recall", 4: "Connect" } as const;
 
 export function streakLabel(streak: number): string {
   if (streak === 0) return "Start a streak today";
@@ -77,19 +76,11 @@ export function HomeScreen() {
               )}
             </section>
 
-            <section aria-label="Your people">
-              <div className="section-label">Your people</div>
-              {([1, 2, 3, 4] as const).map((level) => (
-                <div className="row" key={level}>
-                  <span>{LEVEL_NAMES[level]}</span>
-                  <span className="quiet">{summary.value.levels[level]}</span>
-                </div>
-              ))}
-              <div className="row" style={{ fontWeight: 600 }}>
-                <span>Mastered</span>
-                <span>{summary.value.mastered}</span>
-              </div>
-            </section>
+            <FaceRow
+              faces={summary.value.faces}
+              total={summary.value.total}
+              knownWell={summary.value.knownWell}
+            />
           </>
         )}
       </main>

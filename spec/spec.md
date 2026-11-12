@@ -13,7 +13,7 @@ MovieStars v1 is an English-language website that installs on a phone like an ap
 | --- | --- | --- | --- |
 | 1 | **Welcome** (first launch only) | One line on what the app does | "Start", or "First, tap films I've seen" |
 | 2 | **Recent films** | Grid of posters: now playing and trending this week, plus a search box | Tap the films you've seen, then "Done" |
-| 3 | **Home** | Streak, today's goal (e.g. 10 cards), level counts, "Play" button | Start today's session in one tap |
+| 3 | **Home** | Streak, today's goal (e.g. 10 cards), "Start" button, and a row of the faces you're learning | Start today's session in one tap |
 | 4 | **Session** | One card at a time (see Card types), progress bar | Answer; see feedback; next |
 | 5 | **Session summary** | Cards right/wrong, people who levelled up, streak | Back to Home, or "One more round" |
 | 6 | **Person** | Photo, name, role (actor/director), country, known-for films with posters | "Interested / Not for me"; open a film |
@@ -80,7 +80,7 @@ The app uses FSRS (Free Spaced Repetition Scheduler), an open-source spaced-repe
 ## Engagement (healthy habit, no dark patterns)
 
 - **Streak:** days in a row with at least one completed session. One missed day per week is forgiven automatically.
-- **Visible progress:** counts per level on Home; a short "levelled up" moment in the summary.
+- **Visible progress:** on Home, a row of small round photos of the people you're learning (up to 12, best known first, then "+N"). Each face is more faded the lower its level: level 1 faintest, level 4 in full colour, mastered people with a dark ring. A caption reads "9 people · 2 you know well" (level 3 and up). Tapping the row opens My people, which holds the per-level breakdown. A short "levelled up" moment in the summary. (Changed from per-level counts by louis80 on 2026-11-12.)
 - **Short by design:** a session ends at the daily goal; "One more round" is offered once, never automatically.
 - **No:** endless feeds, push notifications in v1, timers, penalties, or fake urgency.
 
