@@ -4,7 +4,7 @@
 - **Date:** 2026-11-12
 - **Code:** branch `build/v1`, commit `3724a95`
 - **CI run:** [GitHub Actions #43234530992](https://github.com/louis80/MovieStars/actions/runs/43234530992), green (lint, 135 unit tests, build, 12 browser tests)
-- **Status:** Awaiting louis80's acceptance
+- **Status:** Accepted by louis80 on 2026-11-12
 
 ## Result
 
