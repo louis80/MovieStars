@@ -1,7 +1,7 @@
 # Spec: MovieStars v1
 
 - **Reads:** [intent/intent.md](../intent/intent.md) (approved 2026-11-12)
-- **Status:** Draft, awaiting approval
+- **Status:** Approved by louis80 on 2026-11-12
 
 ## Summary
 
