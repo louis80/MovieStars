@@ -21,6 +21,7 @@ An app, on phone and on the web, that helps me learn and remember:
 ## Proposed outcomes
 
 - Choosing who to learn takes no effort. The app starts straight away with well-known stars and directors, and learns my taste as I play: a quick "interested / not for me" on each face, and films I recognise bring in their cast. Filters by country or era and a name search are there if I want them, never required.
+- I can tell the app which films I've seen recently by tapping their posters in a grid (search only for anything missing). It's offered once at the start, can be skipped, and stays available as "I just watched…". Each film brings its cast and director into my learning queue, and the quiz uses the film as a memory hint.
 - For each person, I see their photo, name and best-known films in a clear, simple page.
 - Learning is progressive. Each person moves up through levels as I get them right:
   1. **Recognise:** pick the right name among several choices.
