@@ -53,13 +53,21 @@ export function answer(session: Session, grade: Grade): Session {
   };
 }
 
+/** Move on without an answer (the person was marked "Not for me"). */
+export function skip(session: Session): Session {
+  if (isComplete(session)) return session;
+  return { ...session, position: session.position + 1 };
+}
+
 /** Progress for the bar at the top of a card: answers given out of cards planned so far. */
 export function progress(session: Session): { done: number; total: number } {
   return { done: session.position, total: session.order.length };
 }
 
 export interface SessionSummary {
+  /** People answered correctly the first time they came up. */
   right: number;
+  /** People missed at least once (to review). */
   wrong: number;
   levelledUp: number[];
 }
@@ -69,14 +77,18 @@ export function summarize(
   before: ReadonlyMap<number, QueueEntry>,
   after: ReadonlyMap<number, QueueEntry>,
 ): SessionSummary {
-  const right = session.answers.filter((a) => a.grade === "good").length;
+  // Count people, not answers: a missed person comes back once and must not count twice.
+  const firstGrade = new Map<number, Grade>();
+  for (const a of session.answers)
+    if (!firstGrade.has(a.personId)) firstGrade.set(a.personId, a.grade);
+  const right = [...firstGrade.values()].filter((g) => g === "good").length;
   const levelledUp = [...after.values()]
     .filter((e) => {
       const was = before.get(e.personId);
       return was !== undefined && e.level > was.level;
     })
     .map((e) => e.personId);
-  return { right, wrong: session.answers.length - right, levelledUp };
+  return { right, wrong: firstGrade.size - right, levelledUp };
 }
 
 // ---- Streak (spec: Engagement) ----

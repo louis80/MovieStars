@@ -109,10 +109,10 @@ const castMember = (p: TmdbPersonDetails, character: string, order: number) => (
 });
 
 /** Supporting cast without their own fixture: their person details are synthesised. */
-const extraNames = new Map<number, string>();
+const extraNames = new Map<number, { name: string; gender: 1 | 2 }>();
 
-const extra = (id: number, name: string, order: number) => {
-  extraNames.set(id, name);
+const extra = (id: number, name: string, order: number, gender: 1 | 2 = 2) => {
+  extraNames.set(id, { name, gender });
   return extraCast(id, name, order);
 };
 
@@ -144,7 +144,7 @@ export const filmDetails: Record<number, TmdbMovieDetails> = {
         extra(3184472, "Milo Machado-Graner", 2),
         extra(1271003, "Antoine Reinartz", 3),
         extra(1661451, "Samuel Theis", 4),
-        extra(2312345, "Jehnny Beth", 5),
+        extra(2312345, "Jehnny Beth", 5, 1),
       ],
       crew: [director(people.justineTriet)],
     },
@@ -172,7 +172,7 @@ export const filmDetails: Record<number, TmdbMovieDetails> = {
         extra(3894, "Christian Bale", 0),
         extra(3895, "Michael Caine", 1),
         extra(64, "Gary Oldman", 2),
-        extra(1813, "Anne Hathaway", 3),
+        extra(1813, "Anne Hathaway", 3, 1),
         extra(2524, "Tom Hardy", 4),
         castMember(people.marionCotillard, "Miranda Tate", 5),
       ],
@@ -182,12 +182,13 @@ export const filmDetails: Record<number, TmdbMovieDetails> = {
 };
 
 function extraPerson(id: number): TmdbPersonDetails | undefined {
-  const name = extraNames.get(id);
-  if (!name) return undefined;
+  const known = extraNames.get(id);
+  if (!known) return undefined;
+  const { name, gender } = known;
   return {
     id,
     name,
-    gender: 0,
+    gender,
     profile_path: `/profile-${id}.jpg`,
     known_for_department: "Acting",
     place_of_birth: null,

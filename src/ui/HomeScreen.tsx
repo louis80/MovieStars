@@ -3,13 +3,9 @@ import { useServices } from "../app/ServicesContext";
 import { BottomNav } from "./BottomNav";
 import { FaceRow } from "./FaceRow";
 import { Icon } from "./Icon";
+import { streakLabel } from "./streak";
 import { useAsync } from "./useAsync";
 import { useEnterKey } from "./useEnterKey";
-
-export function streakLabel(streak: number): string {
-  if (streak === 0) return "Start a streak today";
-  return streak === 1 ? "1-day streak" : `${streak}-day streak`;
-}
 
 export function HomeScreen() {
   const { learning, sample } = useServices();

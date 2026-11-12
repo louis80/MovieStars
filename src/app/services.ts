@@ -1,5 +1,6 @@
 import { MovieStarsDb, dbResponseCache } from "../data/db";
 import { TmdbClient, imageUrl, type ImageSize } from "../tmdb/client";
+import type { Rng } from "../learning/random";
 import { LearningService } from "./learningService";
 
 export interface Services {
@@ -9,6 +10,8 @@ export interface Services {
   image: (path: string | null, size?: ImageSize) => string | null;
   /** True when running on built-in sample data instead of TMDB (preview builds). */
   sample: boolean;
+  /** Randomness for cards; tests pass a seeded one. */
+  rng: Rng;
 }
 
 export function makeServices(options: {
@@ -16,6 +19,7 @@ export function makeServices(options: {
   tmdb: TmdbClient;
   sample: boolean;
   now?: () => Date;
+  rng?: Rng;
 }): Services {
   return {
     db: options.db,
@@ -23,6 +27,7 @@ export function makeServices(options: {
     // Sample data has no real images, so placeholders are shown instead.
     image: options.sample ? () => null : imageUrl,
     sample: options.sample,
+    rng: options.rng ?? Math.random,
   };
 }
 

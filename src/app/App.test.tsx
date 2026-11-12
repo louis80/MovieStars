@@ -29,7 +29,7 @@ describe("first launch", () => {
     await screen.findByRole("heading", { name: /put a name to every face/i });
     await user.click(screen.getByRole("button", { name: "Start" }));
 
-    await screen.findByRole("heading", { name: "Session" });
+    await screen.findByRole("progressbar", { name: "Session progress" });
     expect(await db.queue.count()).toBeGreaterThan(0);
     expect((await loadProfile(db)).welcomed).toBe(true);
     db.close();

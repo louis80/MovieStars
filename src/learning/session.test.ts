@@ -71,11 +71,11 @@ describe("session flow (AC7)", () => {
 });
 
 describe("summarize", () => {
-  it("counts right and wrong answers and who levelled up", () => {
+  it("counts people, not repeated answers, and who levelled up", () => {
     let s = startSession([1, 2]);
     s = answer(s, "good");
-    s = answer(s, "again");
-    s = answer(s, "good");
+    s = answer(s, "again"); // 2 missed, comes back once
+    s = answer(s, "good"); // 2 right on the repeat: still "to review"
     const before = new Map([
       [1, fresh(1, 0)],
       [2, fresh(2, 0)],
@@ -84,7 +84,7 @@ describe("summarize", () => {
       [1, { ...fresh(1, 0), level: 2 as const }],
       [2, fresh(2, 0)],
     ]);
-    expect(summarize(s, before, after)).toEqual({ right: 2, wrong: 1, levelledUp: [1] });
+    expect(summarize(s, before, after)).toEqual({ right: 1, wrong: 1, levelledUp: [1] });
   });
 });
 

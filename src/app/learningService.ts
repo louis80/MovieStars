@@ -30,6 +30,16 @@ export interface FaceSummary {
 }
 
 export const FACE_ROW_SIZE = 12;
+
+export interface PreparedSession {
+  order: number[];
+  entries: Map<number, QueueEntry>;
+  people: Map<number, Person>;
+  pool: Person[];
+  films: Film[];
+  seenFilmIds: Set<number>;
+  recallMode: RecallMode;
+}
 import {
   GROWTH_BATCH,
   STARTER_SIZE,
@@ -41,7 +51,7 @@ import {
   rankCandidates,
   unique,
 } from "../learning/queue";
-import type { Film, Grade, Person, Profile, QueueEntry } from "../learning/types";
+import type { Film, Grade, Person, Profile, QueueEntry, RecallMode } from "../learning/types";
 import type { TmdbClient } from "../tmdb/client";
 
 /** Countries whose popular films seed the starter set, besides the global popular list. */
@@ -297,6 +307,29 @@ export class LearningService {
     } catch {
       return [];
     }
+  }
+
+  /**
+   * Everything a session needs: today's plan (topping up the queue first if it runs low),
+   * the queue entries and people involved, and what the card builder draws on.
+   */
+  async prepareSession(): Promise<PreparedSession> {
+    await this.growIfNeeded();
+    const now = this.now();
+    const profile = await loadProfile(this.db);
+    const queue = await this.queue();
+    const order = planSession(queue, profile.dailyGoal, now);
+    const entries = new Map(queue.map((e) => [e.personId, e]));
+    const people = new Map((await this.people(order)).map((p) => [p.id, p]));
+    return {
+      order: order.filter((id) => people.has(id)),
+      entries,
+      people,
+      pool: await this.db.people.toArray(),
+      films: await this.db.films.toArray(),
+      seenFilmIds: new Set((await this.db.seenFilms.toArray()).map((s) => s.filmId)),
+      recallMode: profile.recallMode,
+    };
   }
 
   /** Mark today's session as done and update the streak. */
