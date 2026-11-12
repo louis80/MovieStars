@@ -11,7 +11,7 @@ export default defineConfig({
   },
   projects: [{ name: "phone", use: { ...devices["Pixel 7"] } }],
   webServer: {
-    command: "npm run build && npm run preview -- --port 4173",
+    command: "VITE_SAMPLE_DATA=true npm run build && npm run preview -- --port 4173",
     url: "http://localhost:4173",
     reuseExistingServer: !process.env.CI,
   },

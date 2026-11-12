@@ -177,3 +177,35 @@ describe("hint", () => {
     db.close();
   });
 });
+
+describe("review fixes", () => {
+  it("explains a failed first load instead of 'scheduled for later'", async () => {
+    const db = new MovieStarsDb(`session-offline-${++count}`);
+    const tmdb = new TmdbClient({
+      fetchFn: async () => {
+        throw new TypeError("Failed to fetch");
+      },
+    });
+    const services = makeServices({ db, tmdb, sample: true });
+    await saveProfile(db, { ...(await loadProfile(db)), welcomed: true });
+    window.location.hash = "#/session";
+    render(<App services={services} />);
+
+    await screen.findByRole("heading", { name: "No faces yet" });
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+    db.close();
+  });
+
+  it("does not count a session with no answers towards the streak", async () => {
+    const { db, user } = await setup({ level: 1, goal: 5 });
+    for (let i = 0; i < 20; i++) {
+      if (screen.queryByRole("heading", { name: "Session done" })) break;
+      const hide = screen.queryByRole("button", { name: "Don't show again" });
+      if (hide) await user.click(hide);
+      else await waitFor(() => expect(document.querySelector(".choice, .btn")).not.toBeNull());
+    }
+    await screen.findByRole("heading", { name: "Session done" });
+    expect((await loadProfile(db)).lastSessionDay).toBeNull();
+    db.close();
+  });
+});

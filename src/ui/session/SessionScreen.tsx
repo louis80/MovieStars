@@ -51,6 +51,25 @@ export function SessionScreen() {
     );
   }
 
+  if (prepared.queueSize === 0) {
+    return (
+      <main className="screen">
+        <h1 className="title-sm">No faces yet</h1>
+        <p className="lead">
+          MovieStars could not load anyone. Check your connection, then try again.
+        </p>
+        <div className="bottom">
+          <button type="button" className="btn btn-primary" onClick={() => setRound((r) => r + 1)}>
+            Try again
+          </button>
+          <Link to="/" className="btn-text" style={{ textAlign: "center" }}>
+            Back to Home
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
   if (prepared.order.length === 0) {
     return (
       <main className="screen">
@@ -117,9 +136,10 @@ function SessionRun({
   const done = isComplete(session);
 
   useEffect(() => {
-    if (!done || finished) return;
+    // Only a session with at least one answer counts towards the streak.
+    if (!done || finished || session.answers.length === 0) return;
     learning.finishSession().then((profile) => setFinished({ streak: profile.streak }));
-  }, [done, finished, learning]);
+  }, [done, finished, learning, session.answers.length]);
 
   const record = useCallback(
     async (grade: Grade) => {

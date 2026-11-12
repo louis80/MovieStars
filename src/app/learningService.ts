@@ -54,6 +54,8 @@ export interface FilmPage {
 
 export interface PreparedSession {
   order: number[];
+  /** Everyone in the queue; 0 means nothing could be loaded yet. */
+  queueSize: number;
   entries: Map<number, QueueEntry>;
   people: Map<number, Person>;
   pool: Person[];
@@ -77,6 +79,27 @@ import type { TmdbClient } from "../tmdb/client";
 
 /** Countries whose popular films seed the starter set, besides the global popular list. */
 const STARTER_COUNTRIES = ["FR", "GB", "ES"];
+
+/** How many TMDB requests run at once when loading a batch. */
+const LOAD_CONCURRENCY = 4;
+
+/** Like Promise.all over items, but at most `limit` calls run at a time. */
+async function mapLimited<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results: R[] = new Array<R>(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const index = next++;
+      results[index] = await fn(items[index] as T);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
 const FILMS_PER_COUNTRY = 3;
 
 /**
@@ -106,13 +129,10 @@ export class LearningService {
     }
   }
 
+  /** Load several people, a few at a time, keeping their order and skipping failures. */
   async people(ids: number[]): Promise<Person[]> {
-    const found: Person[] = [];
-    for (const id of unique(ids)) {
-      const person = await this.person(id);
-      if (person) found.push(person);
-    }
-    return found;
+    const loaded = await mapLimited(unique(ids), LOAD_CONCURRENCY, (id) => this.person(id));
+    return loaded.filter((p): p is Person => p !== undefined);
   }
 
   async film(id: number): Promise<Film | undefined> {
@@ -143,10 +163,12 @@ export class LearningService {
       const ids: number[] = [];
       try {
         const page = await this.tmdb.popularFilmsFrom(country);
-        for (const summary of page.results.slice(0, FILMS_PER_COUNTRY)) {
-          const film = await this.film(summary.id);
-          if (film) ids.push(...peopleFromFilm(film));
-        }
+        const films = await mapLimited(
+          page.results.slice(0, FILMS_PER_COUNTRY),
+          LOAD_CONCURRENCY,
+          (summary) => this.film(summary.id),
+        );
+        for (const film of films) if (film) ids.push(...peopleFromFilm(film));
       } catch {
         // Skip this country.
       }
@@ -398,6 +420,7 @@ export class LearningService {
     const people = new Map((await this.people(order)).map((p) => [p.id, p]));
     return {
       order: order.filter((id) => people.has(id)),
+      queueSize: queue.length,
       entries,
       people,
       pool: await this.db.people.toArray(),

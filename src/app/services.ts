@@ -31,6 +31,13 @@ export function makeServices(options: {
   };
 }
 
+export class MissingTmdbSettingsError extends Error {
+  constructor() {
+    super("MovieStars was built without VITE_TMDB_TOKEN or VITE_TMDB_BASE_URL.");
+    this.name = "MissingTmdbSettingsError";
+  }
+}
+
 /**
  * Real TMDB when a token (or a proxy URL) is configured; otherwise the built-in sample
  * data, so the app can be previewed without a TMDB account.
@@ -48,6 +55,11 @@ export async function createServices(): Promise<Services> {
     });
     return makeServices({ db, tmdb, sample: false });
   }
+
+  // Sample data only when asked for (local development, previews, tests), never by accident
+  // in a release build that is missing its TMDB settings.
+  const sampleAllowed = import.meta.env.DEV || import.meta.env.VITE_SAMPLE_DATA === "true";
+  if (!sampleAllowed) throw new MissingTmdbSettingsError();
 
   const { fixtureFetch } = await import("../../tests/fixtures/tmdb");
   const tmdb = new TmdbClient({ fetchFn: fixtureFetch(), cache: dbResponseCache(db) });
