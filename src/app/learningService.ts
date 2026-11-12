@@ -1,4 +1,6 @@
-import type { MovieStarsDb } from "../data/db";
+import { loadProfile, saveProfile, type MovieStarsDb } from "../data/db";
+import { applyAnswer, localDay } from "../learning/levels";
+import { completeSessionDay } from "../learning/session";
 import {
   GROWTH_BATCH,
   STARTER_SIZE,
@@ -10,7 +12,7 @@ import {
   rankCandidates,
   unique,
 } from "../learning/queue";
-import type { Film, Person, QueueEntry } from "../learning/types";
+import type { Film, Grade, Person, Profile, QueueEntry } from "../learning/types";
 import type { TmdbClient } from "../tmdb/client";
 
 /** Countries whose popular films seed the starter set, besides the global popular list. */
@@ -170,6 +172,26 @@ export class LearningService {
       ranked.slice(0, GROWTH_BATCH).map((p) => p.id),
       "growth",
     );
+  }
+
+  /** Save one answer: new level and FSRS state, plus a review-log row. Returns the new entry. */
+  async recordAnswer(personId: number, grade: Grade): Promise<QueueEntry | undefined> {
+    const now = this.now();
+    return this.db.transaction("rw", this.db.queue, this.db.reviewLog, async () => {
+      const entry = await this.db.queue.get(personId);
+      if (!entry) return undefined;
+      const updated = applyAnswer(entry, grade, now);
+      await this.db.queue.put(updated);
+      await this.db.reviewLog.add({ personId, at: now.getTime(), level: entry.level, grade });
+      return updated;
+    });
+  }
+
+  /** Mark today's session as done and update the streak. */
+  async finishSession(): Promise<Profile> {
+    const profile = completeSessionDay(await loadProfile(this.db), localDay(this.now()));
+    await saveProfile(this.db, profile);
+    return profile;
   }
 
   private async add(ids: number[], source: QueueEntry["source"]): Promise<number> {

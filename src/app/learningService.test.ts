@@ -119,3 +119,26 @@ describe("growIfNeeded", () => {
     db.close();
   });
 });
+
+describe("recordAnswer and finishSession", () => {
+  it("saves the new level and memory, logs the answer, and updates the streak", async () => {
+    const { db, service } = setup();
+    await service.addPerson(people.merylStreep.id);
+
+    const updated = await service.recordAnswer(people.merylStreep.id, "good");
+    expect(updated?.memory.reps).toBe(1);
+    expect((await db.queue.get(people.merylStreep.id))?.memory.reps).toBe(1);
+    expect(await db.reviewLog.count()).toBe(1);
+
+    const profile = await service.finishSession();
+    expect(profile).toMatchObject({ streak: 1, lastSessionDay: "2026-11-12" });
+    db.close();
+  });
+
+  it("ignores an answer for someone not in the queue", async () => {
+    const { db, service } = setup();
+    expect(await service.recordAnswer(1, "good")).toBeUndefined();
+    expect(await db.reviewLog.count()).toBe(0);
+    db.close();
+  });
+});
