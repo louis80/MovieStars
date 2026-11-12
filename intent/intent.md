@@ -20,9 +20,14 @@ An app, on phone and on the web, that helps me learn and remember:
 
 ## Proposed outcomes
 
-- I can pick the stars and directors I care about (by country, era, or by searching a name).
+- Choosing who to learn takes no effort. The app starts straight away with well-known stars and directors, and learns my taste as I play: a quick "interested / not for me" on each face, and films I recognise bring in their cast. Filters by country or era and a name search are there if I want them, never required.
 - For each person, I see their photo, name and best-known films in a clear, simple page.
-- The app quizzes me (face → name, film → star, film → director) and brings back the ones I get wrong until I know them.
+- Learning is progressive. Each person moves up through levels as I get them right:
+  1. **Recognise:** pick the right name among several choices.
+  2. **Distinguish:** fewer clues and closer look-alike choices (same country, same era).
+  3. **Recall:** type or say the name myself.
+  4. **Connect:** link people and films (film → star, film → director, star → films).
+- The app brings back the people I get wrong until I know them, and drops a level when I forget.
 - I want to come back every day: short daily sessions, progress I can see, and small rewards such as streaks and levels.
 
 ## Affected users
