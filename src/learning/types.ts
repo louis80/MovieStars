@@ -105,6 +105,8 @@ export interface Profile {
   forgivenWeek: string | null;
   dailyGoal: 5 | 10 | 20;
   recallMode: RecallMode;
+  /** The Welcome screen has been passed (first launch is over). */
+  welcomed: boolean;
 }
 
 export const DEFAULT_PROFILE: Profile = {
@@ -114,4 +116,5 @@ export const DEFAULT_PROFILE: Profile = {
   forgivenWeek: null,
   dailyGoal: 10,
   recallMode: "flip",
+  welcomed: false,
 };

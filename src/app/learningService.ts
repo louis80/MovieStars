@@ -1,6 +1,19 @@
 import { loadProfile, saveProfile, type MovieStarsDb } from "../data/db";
-import { applyAnswer, localDay } from "../learning/levels";
-import { completeSessionDay } from "../learning/session";
+import { applyAnswer, isMastered, localDay } from "../learning/levels";
+import { completeSessionDay, currentStreak, planSession } from "../learning/session";
+import type { TmdbMovieSummary } from "../tmdb/types";
+
+export interface HomeSummary {
+  streak: number;
+  /** People answered today, capped at the goal. */
+  done: number;
+  goal: number;
+  /** People at each level, not counting mastered ones. */
+  levels: Record<1 | 2 | 3 | 4, number>;
+  mastered: number;
+  /** Cards today's session would hold right now. */
+  planned: number;
+}
 import {
   GROWTH_BATCH,
   STARTER_SIZE,
@@ -185,6 +198,63 @@ export class LearningService {
       await this.db.reviewLog.add({ personId, at: now.getTime(), level: entry.level, grade });
       return updated;
     });
+  }
+
+  async profile(): Promise<Profile> {
+    return loadProfile(this.db);
+  }
+
+  async markWelcomed(): Promise<void> {
+    await saveProfile(this.db, { ...(await loadProfile(this.db)), welcomed: true });
+  }
+
+  /** What the Home screen shows: streak, today's progress and people per level. */
+  async homeSummary(): Promise<HomeSummary> {
+    const now = this.now();
+    const profile = await loadProfile(this.db);
+    const queue = await this.queue();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const todayIds = new Set(
+      (await this.db.reviewLog.where("at").aboveOrEqual(startOfDay).toArray()).map(
+        (r) => r.personId,
+      ),
+    );
+    const mastered = queue.filter(isMastered);
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    for (const e of queue) if (!isMastered(e)) counts[e.level] += 1;
+    return {
+      streak: currentStreak(profile, localDay(now)),
+      done: Math.min(todayIds.size, profile.dailyGoal),
+      goal: profile.dailyGoal,
+      levels: counts,
+      mastered: mastered.length,
+      planned: planSession(queue, profile.dailyGoal, now).length,
+    };
+  }
+
+  /** Posters for "Films I've seen": now playing and trending this week, without repeats. */
+  async filmChoices(): Promise<TmdbMovieSummary[]> {
+    const lists = await Promise.allSettled([this.tmdb.nowPlaying(), this.tmdb.trendingFilms()]);
+    const seen = new Set<number>();
+    const films: TmdbMovieSummary[] = [];
+    for (const list of lists) {
+      if (list.status !== "fulfilled") continue;
+      for (const film of list.value.results) {
+        if (seen.has(film.id)) continue;
+        seen.add(film.id);
+        films.push(film);
+      }
+    }
+    return films;
+  }
+
+  async searchFilms(query: string): Promise<TmdbMovieSummary[]> {
+    if (query.trim().length < 2) return [];
+    try {
+      return (await this.tmdb.searchFilms(query.trim())).results;
+    } catch {
+      return [];
+    }
   }
 
   /** Mark today's session as done and update the streak. */
