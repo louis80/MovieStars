@@ -2,7 +2,7 @@
 
 - **Author:** louis80
 - **Date:** 2026-11-12
-- **Status:** Draft, awaiting approval
+- **Status:** Approved by louis80 on 2026-11-12
 
 ## What we want
 
