@@ -19,7 +19,7 @@ MovieStars v1 is an English-language website that installs on a phone like an ap
 | 6 | **Person** | Photo, name, role (actor/director), country, known-for films with posters | "More like this / Don't show again"; open a film |
 | 7 | **Film** | Poster, title, year, director, main cast | Open a person; "I've seen this" |
 | 8 | **My people** | Everyone in the learning queue, grouped by level, with optional filters (country, era, role) and search | Open a person; remove from queue |
-| 9 | **About** | What the app is, TMDB logo and notice | — |
+| 9 | **About** | What the app is, settings (cards per day: 5, 10 or 20; level-3 answer mode), TMDB logo and notice | Change a setting |
 
 Navigation: a bottom bar with **Home**, **My people**, and **I just watched…** (opens screen 2). About is reachable from Home.
 

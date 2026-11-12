@@ -11,7 +11,7 @@ const LOOK = {
   4: { opacity: 1, grayscale: 0 },
 } as const;
 
-function initials(name: string): string {
+export function initials(name: string): string {
   const parts = name.split(/\s+/).filter(Boolean);
   return (
     (parts[0]?.[0] ?? "") + (parts.length > 1 ? (parts.at(-1)?.[0] ?? "") : "")

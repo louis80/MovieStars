@@ -2,7 +2,9 @@ import { HashRouter, Navigate, Route, Routes } from "react-router";
 import { AboutScreen } from "../ui/AboutScreen";
 import { FilmsScreen } from "../ui/FilmsScreen";
 import { HomeScreen } from "../ui/HomeScreen";
-import { PlaceholderScreen } from "../ui/PlaceholderScreen";
+import { FilmScreen } from "../ui/people/FilmScreen";
+import { MyPeopleScreen } from "../ui/people/MyPeopleScreen";
+import { PersonScreen } from "../ui/people/PersonScreen";
 import { SessionScreen } from "../ui/session/SessionScreen";
 import { useAsync } from "../ui/useAsync";
 import { WelcomeScreen } from "../ui/WelcomeScreen";
@@ -27,7 +29,9 @@ export function App({ services }: { services: Services }) {
             <Route path="/welcome" element={<WelcomeScreen />} />
             <Route path="/films" element={<FilmsScreen />} />
             <Route path="/session" element={<SessionScreen />} />
-            <Route path="/people" element={<PlaceholderScreen title="My people" task="T10" />} />
+            <Route path="/people" element={<MyPeopleScreen />} />
+            <Route path="/person/:id" element={<PersonScreen />} />
+            <Route path="/film/:id" element={<FilmScreen />} />
             <Route path="/about" element={<AboutScreen />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

@@ -1,7 +1,7 @@
 import { loadProfile, saveProfile, type MovieStarsDb } from "../data/db";
 import { applyAnswer, isMastered, localDay } from "../learning/levels";
 import { completeSessionDay, currentStreak, planSession } from "../learning/session";
-import type { TmdbMovieSummary } from "../tmdb/types";
+import type { TmdbMovieSummary, TmdbPersonSummary } from "../tmdb/types";
 
 export interface HomeSummary {
   streak: number;
@@ -30,6 +30,27 @@ export interface FaceSummary {
 }
 
 export const FACE_ROW_SIZE = 12;
+
+export interface MyPerson {
+  person: Person;
+  level: 1 | 2 | 3 | 4;
+  mastered: boolean;
+}
+
+export interface PersonPage {
+  person: Person;
+  /** Null when the person is not in the learning queue. */
+  entry: QueueEntry | null;
+  mastered: boolean;
+  excluded: boolean;
+}
+
+export interface FilmPage {
+  film: Film;
+  directors: Person[];
+  cast: Person[];
+  seen: boolean;
+}
 
 export interface PreparedSession {
   order: number[];
@@ -156,9 +177,60 @@ export class LearningService {
     return added;
   }
 
+  /** "Add" on a person page: an explicit choice, so it also undoes "Don't show again". */
   async addPerson(personId: number): Promise<number> {
     const person = await this.person(personId);
-    return person ? this.add([person.id], "added") : 0;
+    if (!person) return 0;
+    await this.db.excluded.delete(person.id);
+    return this.add([person.id], "added");
+  }
+
+  /** Everyone in the learning queue, for My people. */
+  async myPeople(): Promise<MyPerson[]> {
+    const queue = await this.queue();
+    const list: MyPerson[] = [];
+    for (const entry of queue) {
+      const person = await this.db.people.get(entry.personId);
+      if (person) list.push({ person, level: entry.level, mastered: isMastered(entry) });
+    }
+    return list.sort((a, b) => a.person.name.localeCompare(b.person.name));
+  }
+
+  async personPage(id: number): Promise<PersonPage | undefined> {
+    const person = await this.person(id);
+    if (!person) return undefined;
+    const entry = (await this.db.queue.get(id)) ?? null;
+    const excluded = (await this.db.excluded.get(id)) !== undefined;
+    return { person, entry, mastered: entry ? isMastered(entry) : false, excluded };
+  }
+
+  async filmPage(id: number): Promise<FilmPage | undefined> {
+    const film = await this.film(id);
+    if (!film) return undefined;
+    const directors = await this.people(film.directorIds);
+    const cast = await this.people(film.castIds);
+    const seen = (await this.db.seenFilms.get(id)) !== undefined;
+    return { film, directors, cast, seen };
+  }
+
+  /** People on TMDB matching a name who are not in the queue yet. */
+  async findNewPeople(query: string): Promise<TmdbPersonSummary[]> {
+    if (query.trim().length < 2) return [];
+    try {
+      const queued = new Set((await this.queue()).map((e) => e.personId));
+      const page = await this.tmdb.searchPeople(query.trim());
+      return page.results.filter((p) => !queued.has(p.id));
+    } catch {
+      return [];
+    }
+  }
+
+  async updateSettings(
+    change: Partial<Pick<Profile, "dailyGoal" | "recallMode">>,
+  ): Promise<Profile> {
+    const profile = { ...(await loadProfile(this.db)), ...change };
+    await saveProfile(this.db, profile);
+    return profile;
   }
 
   /** "Don't show again": remove the person and never re-add them automatically (spec AC8). */
