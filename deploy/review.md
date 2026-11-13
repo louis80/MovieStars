@@ -3,7 +3,7 @@
 - **Reads:** [test/report.md](../test/report.md) (accepted 2026-11-12), [spec/spec.md](../spec/spec.md)
 - **Pull request:** [#1 MovieStars v1](https://github.com/louis80/MovieStars/pull/1), `build/v1` → `main`
 - **Reviewed:** commit `084d9cd`; fixes in `ee98ddb`
-- **Status:** Review done; hosting decided; release waits on the repo settings, token and checks below
+- **Status:** Release approved by louis80 on 2026-11-13
 
 ## Verdict
 
