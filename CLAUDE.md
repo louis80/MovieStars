@@ -40,7 +40,7 @@ src/
   data/        IndexedDB via Dexie: queue, review log, seen films, profile.
   learning/    Pure logic, no UI: queue growth, card selection, levels, FSRS wrapper, answer checking.
   ui/          React screens and components.
-  app/         Routing, PWA setup, app shell.
+  app/         Routing, PWA setup, app shell, and services that wire tmdb/ + data/ + learning/.
 tests/
   fixtures/    Recorded TMDB responses used by all tests.
   e2e/         Playwright tests.
@@ -67,3 +67,7 @@ tests/
 ## Recurring corrections
 
 (Add lessons here as they come up, one line each, newest first.)
+
+- Browser tests: visiting the same `#/route` again does not remount the screen; go through another route first.
+- Sample data must behave like TMDB: name search ignores accents ("huller" finds "Hüller").
+- Prettier must never reformat the approved Markdown artifacts (`*.md` is in `.prettierignore`).

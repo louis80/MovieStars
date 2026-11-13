@@ -13,13 +13,13 @@ MovieStars v1 is an English-language website that installs on a phone like an ap
 | --- | --- | --- | --- |
 | 1 | **Welcome** (first launch only) | One line on what the app does | "Start", or "First, tap films I've seen" |
 | 2 | **Recent films** | Grid of posters: now playing and trending this week, plus a search box | Tap the films you've seen, then "Done" |
-| 3 | **Home** | Streak, today's goal (e.g. 10 cards), level counts, "Play" button | Start today's session in one tap |
+| 3 | **Home** | Streak, today's goal (e.g. 10 cards), "Start" button, and a row of the faces you're learning | Start today's session in one tap |
 | 4 | **Session** | One card at a time (see Card types), progress bar | Answer; see feedback; next |
 | 5 | **Session summary** | Cards right/wrong, people who levelled up, streak | Back to Home, or "One more round" |
-| 6 | **Person** | Photo, name, role (actor/director), country, known-for films with posters | "Interested / Not for me"; open a film |
+| 6 | **Person** | Photo, name, role (actor/director), country, known-for films with posters | "More like this / Don't show again"; open a film |
 | 7 | **Film** | Poster, title, year, director, main cast | Open a person; "I've seen this" |
 | 8 | **My people** | Everyone in the learning queue, grouped by level, with optional filters (country, era, role) and search | Open a person; remove from queue |
-| 9 | **About** | What the app is, TMDB logo and notice | — |
+| 9 | **About** | What the app is, settings (cards per day: 5, 10 or 20; level-3 answer mode), TMDB logo and notice | Change a setting |
 
 Navigation: a bottom bar with **Home**, **My people**, and **I just watched…** (opens screen 2). About is reachable from Home.
 
@@ -29,8 +29,8 @@ The queue is the list of people the app will quiz you on. It fills itself; picki
 
 - **Starter set:** on first launch the queue is seeded with about 20 popular actors and directors from TMDB, mixing US, French and other countries.
 - **Recent films:** each film tapped on screen 2 adds its director and its top 5 billed cast.
-- **Taste signal:** during sessions, a new face shows "Interested / Not for me" buttons. "Not for me" removes the person and makes similar people (same country and era) less likely to be added.
-- **Growth:** when fewer than 5 people are left at level 1, the app adds new people, favouring the countries and eras of people marked "Interested" and the casts of films already seen.
+- **Taste signal:** during sessions, the first time a person appears, the card shows "More like this / Don't show again" buttons. "Don't show again" removes the person and makes similar people (same country and era) less likely to be added.
+- **Growth:** when fewer than 5 people are left at level 1, the app adds new people, favouring the countries and eras of people marked "More like this" and the casts of films already seen.
 - **Optional controls:** filters and name search on My people, and "Add" on any Person page.
 
 ## Card types and levels
@@ -80,7 +80,7 @@ The app uses FSRS (Free Spaced Repetition Scheduler), an open-source spaced-repe
 ## Engagement (healthy habit, no dark patterns)
 
 - **Streak:** days in a row with at least one completed session. One missed day per week is forgiven automatically.
-- **Visible progress:** counts per level on Home; a short "levelled up" moment in the summary.
+- **Visible progress:** on Home, a row of small round photos of the people you're learning (up to 12, best known first, then "+N"). Each face is more faded the lower its level: level 1 faintest, level 4 in full colour, mastered people with a dark ring. A caption reads "9 people · 2 you know well" (level 3 and up). Tapping the row opens My people, which holds the per-level breakdown. A short "levelled up" moment in the summary. (Changed from per-level counts by louis80 on 2026-11-12.)
 - **Short by design:** a session ends at the daily goal; "One more round" is offered once, never automatically.
 - **No:** endless feeds, push notifications in v1, timers, penalties, or fake urgency.
 
@@ -124,7 +124,7 @@ Country and era for a person are derived from place of birth and the years of th
 5. Level-2 choices come from the same country and decade as the person whenever at least 3 such people are available.
 6. Level 3 works in all three answer modes. Flip and self-rate needs at most 2 taps; typing accepts the family name alone and tolerates one typo or a missing accent ("Cotilard", "Celine").
 7. Next review dates come from FSRS: after a Good grade the next interval is longer than the previous one, and after Again the person reappears in the same session.
-8. "Not for me" removes the person from the queue, and they are not re-added automatically.
+8. "Don't show again" removes the person from the queue, and they are not re-added automatically.
 9. Progress survives closing and reopening the app, and works offline for people already cached.
 10. The app can be installed to a phone's home screen and opens full-screen.
 11. The About page shows the TMDB logo and the notice "This product uses the TMDB API but is not endorsed or certified by TMDB."
